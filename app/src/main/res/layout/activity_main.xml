@@ -17,9 +17,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="Da Lat"
             android:textColor="@color/colorWhite"
-            android:textSize="40sp">
+            android:textSize="30sp">
 
         </TextView>
 
