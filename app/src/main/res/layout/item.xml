@@ -19,6 +19,7 @@
         android:layout_height="30dp"
         android:src="@drawable/sunny"
 
+
         />
     <TextView
         android:layout_gravity="center"
