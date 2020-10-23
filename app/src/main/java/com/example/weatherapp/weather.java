@@ -2,6 +2,24 @@ package com.example.weatherapp;
 
 public class weather {
 
+    public String getMax_temp() {
+        return max_temp;
+    }
+
+    public void setMax_temp(String max_temp) {
+        this.max_temp = max_temp;
+    }
+
+    public String getMin_temp() {
+        return min_temp;
+    }
+
+    public void setMin_temp(String min_temp) {
+        this.min_temp = min_temp;
+    }
+
+    private String max_temp;
+    private  String min_temp;
     private String temp;
     private  String name;
     private  String status;
@@ -27,7 +45,7 @@ public class weather {
     private   weather(){}
 
 
-    public weather(String temp, String name, String status, String sunrise, String sunset, String chance_of_rain, String humidity, String wind, String feelsLike, String precipitation, String pressure, String visibility, String uv_Index) {
+    public weather(String max_temp, String min_temp, String temp, String name, String status, String sunrise, String sunset, String chance_of_rain, String humidity, String wind, String feelsLike, String precipitation, String pressure, String visibility, String uv_Index) {
         this.temp = temp;
         this.name = name;
         this.status = status;
@@ -41,6 +59,9 @@ public class weather {
         this.pressure = pressure;
         this.visibility = visibility;
         this.uv_Index = uv_Index;
+        this.max_temp =max_temp;
+        this.min_temp =min_temp;
+
     }
 
     public String getStatus() {
@@ -143,8 +164,8 @@ public class weather {
     public String getName() {
         return name;
     }
-    public void setName(String temp) {
-        this.name = temp;
+    public void setName(String name) {
+        this.name = name;
     }
 
 }
