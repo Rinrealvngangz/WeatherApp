@@ -165,22 +165,31 @@ public class MainActivity extends AppCompatActivity {
                              JSONObject obj = arrayHourly.getJSONObject(i);
                              String time =obj.getString("time");
                              String temp =obj.getString("tempC");
-                             JSONArray arrIconUrl =obj.getJSONArray("weatherIconUrl");
-                             String iconUrl = arrIconUrl.getJSONObject(0).getString("value");
-                                     hourly hourly =new hourly(time,iconUrl,temp);
+                             String weatherCode = obj.getString("weatherCode");
+                                     hourly hourly =new hourly(time,weatherCode,temp);
                                      hourlyList.add(hourly);
 
                      }
                      for ( hourly items: hourlyList
                           ) {
-                        View view = layoutInflaterItemsHourLy.inflate(R.layout.item,linearLayoutHorizon,false);
+                         String uri="";
+                         View view = layoutInflaterItemsHourLy.inflate(R.layout.item,linearLayoutHorizon,false);
                          tempItem =view.findViewById(R.id.tempItem);
                          timeItem =view.findViewById(R.id.timeItem);
                          iconUrl =view.findViewById(R.id.iconItem);
-                         String uri = "@drawable/clear_sky_night";  // where myresource (without the extension) is the file
-                         int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                         Drawable res = getResources().getDrawable(imageResource);
+                         int code = Integer.parseInt(items.getIcon());
 
+                         if( code == 359 ||code ==308 ||code ==302){
+                              uri = "@drawable/torrential_rain_359";  // where myresource (without the extension) is the file
+
+                         }else if(code ==116){
+                             uri = "@drawable/clear_sky_night";
+                         }else if(code ==122){
+                             uri = "@drawable/cloud_lightning";
+                         }
+
+                             int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                         Drawable res = getResources().getDrawable(imageResource);
                          iconUrl.setImageDrawable(res);
                          tempItem.setText(items.getTemp());
                          timeItem.setText(items.getTime());

@@ -2,15 +2,15 @@ package com.example.weatherapp;
 
 public class hourly {
 
-    public hourly(String time, String icon, String temp) {
+    public hourly(String time, String code, String temp) {
         this.time = time;
-        this.icon = icon;
+        this.code = code;
         this.temp = temp;
     }
     public hourly(){};
 
     private   String time;
-    private  String icon;
+    private  String code;
     private String temp;
 
     public String getTime() {
@@ -22,11 +22,11 @@ public class hourly {
     }
 
     public String getIcon() {
-        return icon;
+        return code;
     }
 
     public void setIcon(String icon) {
-        this.icon = icon;
+        this.code = icon;
     }
 
     public String getTemp() {
