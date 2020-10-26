@@ -2,47 +2,74 @@
 <LinearLayout android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:weightSum="11"
     android:layout_marginTop="10dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
     >
 
-    <TextView
-        android:layout_marginLeft="15dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Wednesday"
-        android:textSize="15sp"
-        android:textColor="@color/colorPrimary"
-        >
-    </TextView>
-    <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/sunny"
-        android:layout_marginLeft="60dp"
-        />
-    <Space
-        android:layout_width="95dp"
-        android:layout_height="0dp"
-        >
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2">
+        <TextView
+            android:id="@+id/txtDayBefore"
+            android:layout_marginLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wednesday"
+            android:textSize="15sp"
+            android:textColor="@color/colorPrimary"
+            >
+        </TextView>
+    </LinearLayout>
+   <LinearLayout
+       android:layout_marginLeft="40dp"
+       android:layout_width="0dp"
+       android:layout_height="wrap_content"
+       android:layout_weight="3">
+       <ImageView
+           android:id="@+id/iconWeather"
+           android:layout_width="30dp"
+           android:layout_height="30dp"
+           android:layout_marginLeft="0dp"
+           android:src="@drawable/clear_sky_night"
+           />
 
-    </Space>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="29"
-        android:textSize="15sp"
-        android:textColor="@color/colorPrimary"
 
-        >
-    </TextView>
-    <TextView
+   </LinearLayout>
+
+    <LinearLayout
+
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="24"
-        android:textSize="15sp"
-        android:layout_marginLeft="20dp"
-        android:textColor="@color/colorPrimary"
-        >
-    </TextView>
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+    >
+        <TextView
+            android:id="@+id/txtMaxTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="29"
+            android:textSize="15sp"
+            android:layout_marginLeft="30dp"
+            android:textColor="@color/colorPrimary"
+
+            >
+        </TextView>
+</LinearLayout>
+   <LinearLayout
+       android:layout_width="0dp"
+       android:layout_height="match_parent"
+       android:layout_weight="3">
+       <TextView
+           android:id="@+id/txtMinTemp"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="24"
+           android:textSize="15sp"
+           android:layout_marginLeft="20dp"
+           android:textColor="@color/colorPrimary"
+           >
+       </TextView>
+   </LinearLayout>
+
 </LinearLayout>

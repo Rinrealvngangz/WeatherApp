@@ -47,9 +47,9 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
 
-    private  ImageView iconUrl;
+    private  ImageView iconUrl,imgIconWeather;
     private TextView txtName,txtMaxTemp,txtMinTemp,txtUvIndex,txtSunrise,txtSunset,txtChance_of_rain
-            ,txtHumidity,txtWind,txtFeelsLike,txtPrecipi,txtPressure,txtVisibility,txtDay,txtStatus,txtTemp,tempItem,timeItem;
+        ,txtDayBefore,txtMinTempBefore,txtMaxTempBefore,txtHumidity,txtWind,txtFeelsLike,txtPrecipi,txtPressure,txtVisibility,txtDay,txtStatus,txtTemp,tempItem,timeItem;
     private  String arrNameCity[];
   private  JSONObject objectName,objAstronomy;
    private   JSONArray arrayName,array,arrWeatherDesc;
@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
      private  hourly mainHourly;
      private  DataProvider dataProvider;
     private List<hourly> hourlyList;
+    private  List<daily> dailyList;
 
      public String  url ="https://api.worldweatheronline.com/premium/v1/weather.ashx?key=5b9fefe967924430a45130625202010&q=DaLat&tp=1&num_of_days=10&format=json";
 
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
      private void initId(){
 
         hourlyList =new ArrayList<>();
+        dailyList =new ArrayList<>();
          linearLayoutHorizon =findViewById(R.id.itemHourLy);
          linearLayoutVertical =findViewById(R.id.itemsDaily);
          txtName =findViewById(R.id.txtName);
@@ -160,11 +162,48 @@ public class MainActivity extends AppCompatActivity {
                      mainWeather.setName(arrNameCity[0]);
                       txtName.setText(mainWeather.getName());
 
+                      //Get Daily
+                       for(int j=1; j<array.length();j++){
+                             JSONObject obj =array.getJSONObject(j);
+                         //    Toast.makeText(MainActivity.this,obj.toString(),Toast.LENGTH_LONG).show();
+                               String date = obj.getString("date");
+                               String maxTemp =obj.getString("mintempC");
+                              int minTempInt = Integer.parseInt(maxTemp) -6;
+                               String minTemp = String.valueOf(minTempInt);
+                            String icon = obj.getJSONArray("hourly").getJSONObject(0).get("weatherCode").toString();
+                             daily daily =new daily(date,icon,maxTemp,minTemp);
+                                dailyList.add(daily);
+                       }
+                     for ( daily items :
+                          dailyList  ) {
+                         String uri,dateFormat;
+                         View view =layoutInflaterItemsDaily.inflate(R.layout.itemdaily,linearLayoutVertical,false);
+                         txtDayBefore =view.findViewById(R.id.txtDayBefore);
+                         imgIconWeather =view.findViewById(R.id.iconWeather);
+                         txtMaxTempBefore =view.findViewById(R.id.txtMaxTemp);
+                         txtMinTempBefore =view.findViewById(R.id.txtMinTemp);
+                         int code = Integer.parseInt(items.getIconDay());
+                         uri = setIcon_Code(code);
+                         int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                         Drawable res = getResources().getDrawable(imageResource);
+                         imgIconWeather.setImageDrawable(res);
+                         txtDayBefore.setText(items.getDay());
+                        dateFormat =  setFormatterDayOfWeek(items.getDay());
+                        txtDayBefore.setText(dateFormat);
+                         txtMinTempBefore.setText(items.getMinTempDay());
+                         txtMaxTempBefore.setText(items.getMaxTempDay());
+                         linearLayoutVertical.addView(view);
+
+                     }
+
+
                       //Get Hourly
                      for(int i=0;i<arrayHourly.length();i++){
                              JSONObject obj = arrayHourly.getJSONObject(i);
                              String time =obj.getString("time");
-                             String temp =obj.getString("tempC");
+                         int timeTemp = Integer.parseInt(time);
+                          time =  setFormatTime(timeTemp);
+                         String temp =obj.getString("tempC");
                              String weatherCode = obj.getString("weatherCode");
                                      hourly hourly =new hourly(time,weatherCode,temp);
                                      hourlyList.add(hourly);
@@ -172,29 +211,20 @@ public class MainActivity extends AppCompatActivity {
                      }
                      for ( hourly items: hourlyList
                           ) {
-                         String uri="";
+                         String uri;
                          View view = layoutInflaterItemsHourLy.inflate(R.layout.item,linearLayoutHorizon,false);
                          tempItem =view.findViewById(R.id.tempItem);
                          timeItem =view.findViewById(R.id.timeItem);
                          iconUrl =view.findViewById(R.id.iconItem);
                          int code = Integer.parseInt(items.getIcon());
-
-                         if( code == 359 ||code ==308 ||code ==302){
-                              uri = "@drawable/torrential_rain_359";  // where myresource (without the extension) is the file
-
-                         }else if(code ==116){
-                             uri = "@drawable/clear_sky_night";
-                         }else if(code ==122){
-                             uri = "@drawable/cloud_lightning";
-                         }
-
-                             int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                         Drawable res = getResources().getDrawable(imageResource);
+                          uri= setIcon_Code(code);
+                          int imgRes =getResources().getIdentifier(uri,null,getPackageName());
+                          Drawable res = getResources().getDrawable(imgRes);
                          iconUrl.setImageDrawable(res);
                          tempItem.setText(items.getTemp());
                          timeItem.setText(items.getTime());
                          linearLayoutHorizon.addView(view);
-                         //Toast.makeText(MainActivity.this,items.getIcon(),Toast.LENGTH_LONG).show();
+
                      }
 
                 } catch (JSONException e) {
@@ -212,6 +242,139 @@ public class MainActivity extends AppCompatActivity {
            req.add(reqObj);
      }
 
+     private  String setIcon_Code(int code){
+         String uri;
+         if( code == 359 ||code ==308 ||code ==302 || code ==305){
+             uri = "@drawable/torrential_rain_359";  // where myresource (without the extension) is the file
+         }else if(code ==116){
+             uri = "@drawable/smiling_sun";
+         }else if(code ==122 || code ==200){
+             uri = "@drawable/cloud_lightning";
+         }else if(code ==143){
+             uri ="@drawable/mist";
+         }else if(code ==176 || code ==263 ||code ==353){
+             uri ="@drawable/light_rain_shower";
+         }else if(code ==179){
+             uri ="@drawable/sleet_shower";
+         }else if(code ==374 || code ==377 || code ==365 || code ==362 ||code ==350 || code ==317|| code ==314 ||code ==311|| code ==182 ||code ==185 || code ==281 || code ==284){
+             uri ="@drawable/cloud_with_sleet";
+         }else if(code ==395 ||code == 371||code ==368 ||code ==227 || code ==320 || code ==323 || code ==326){
+             uri ="@drawable/snow";
+         }else if( code ==386 ||code ==230 || code ==296 ||code ==356){
+             uri ="@drawable/rain_heavy";
+         }else if(code ==248 || code ==260){
+             uri ="@drawable/fog";
+         }else if(code ==266 || code ==293 ){
+             uri ="@drawable/cloudy_light_rain";
+         }else if(code ==329 || code ==332 || code ==335 || code ==338){
+             uri ="@drawable/cloudy_light_rain";
+         }else {
+             uri ="@drawable/stormy_weather";
+         }
+         return  uri;
+     }
+     private  String setFormatTime(int timeTemp ){
+        String time="";
+         switch (timeTemp){
+             case 0:
+                 time ="0 AM";
+
+             break;
+             case 100:
+                 time ="1 AM";
+
+                 break;
+             case 200:
+                 time ="2 AM";
+
+                 break;
+             case 300:
+                 time ="3 AM";
+
+                 break;
+             case 400:
+                 time ="4 AM";
+
+                 break;
+             case 500:
+                 time ="5 AM";
+
+                 break;
+             case 600:
+                 time ="6 AM";
+
+                 break;
+             case 700:
+                 time ="7 AM";
+
+                 break;
+             case 800:
+                 time ="8 AM";
+
+                 break;
+             case 900:
+                 time ="9 AM";
+
+                 break;
+             case 1000:
+                 time ="10 AM";
+
+                 break;
+             case 1100:
+                 time ="11 AM";
+
+                 break;
+             case 1200:
+                 time ="0 PM";
+
+                 break;
+             case 1300:
+                 time ="1 PM";
+
+                 break;
+             case 1400:
+                 time ="2 PM";
+
+                 break;
+             case 1500:
+                 time ="3 PM";
+
+                 break;
+             case 1600:
+                 time ="4 PM";
+
+                 break;
+             case 1700:
+                 time ="5 PM";
+
+                 break;
+             case 1800:
+                 time ="6 PM";
+
+                 break;
+             case 1900:
+                 time ="7 PM";
+
+                 break;
+             case 2000:
+                 time ="8 PM";
+
+                 break;
+             case 2100:
+                 time ="9 PM";
+
+                 break;
+             case 2200:
+                 time ="10 PM";
+
+                 break;
+             case 2300:
+                 time ="11 PM";
+
+                 break;
+         }
+         return  time;
+     }
 
     private  String setFormatterDayOfWeek(String dmy){
 
@@ -233,13 +396,6 @@ public class MainActivity extends AppCompatActivity {
          layoutInflaterItemsHourLy = LayoutInflater.from(this);
          layoutInflaterItemsDaily = LayoutInflater.from(this);
 
-
-
-         for(int i=0;i<10;i++){
-             View view =layoutInflaterItemsDaily.inflate(R.layout.itemdaily,linearLayoutVertical,false);
-             linearLayoutVertical.addView(view);
-
-         }
      }
      private  void getValueWeather(){
             mainWeather = dataProvider.getWeather();
