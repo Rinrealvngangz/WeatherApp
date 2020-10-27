@@ -3,16 +3,19 @@ package com.example.weatherapp;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.MediaSync;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,6 +50,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
 
+    private ImageButton btnView;
     private  ImageView iconUrl,imgIconWeather;
     private TextView txtName,txtMaxTemp,txtMinTemp,txtUvIndex,txtSunrise,txtSunset,txtChance_of_rain
         ,txtDayBefore,txtMinTempBefore,txtMaxTempBefore,txtHumidity,txtWind,txtFeelsLike,txtPrecipi,txtPressure,txtVisibility,txtDay,txtStatus,txtTemp,tempItem,timeItem;
@@ -57,11 +61,10 @@ public class MainActivity extends AppCompatActivity {
      private LinearLayout linearLayoutHorizon,linearLayoutVertical;
      private  LayoutInflater layoutInflaterItemsDaily,layoutInflaterItemsHourLy;
      private weather mainWeather;
-     private  hourly mainHourly;
      private  DataProvider dataProvider;
     private List<hourly> hourlyList;
     private  List<daily> dailyList;
-
+private  JSONObject mJsonObject;
      public String  url ="https://api.worldweatheronline.com/premium/v1/weather.ashx?key=5b9fefe967924430a45130625202010&q=DaLat&tp=1&num_of_days=10&format=json";
 
     @Override
@@ -69,13 +72,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initId();
-        reqUrl();
-        getValueWeather();
         initLayOut();
-
+        EventClick();
+        if(getIntent().hasExtra("json")) {
+            try {
+                mJsonObject = new JSONObject(getIntent().getStringExtra("json"));
+               GetJson(mJsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else{
+            reqUrl();
+        }
+    }
+    private void EventClick(){
+        btnView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(MainActivity.this,listViewWeather.class);
+                startActivity(intent);
+            }
+        });
     }
      private void initId(){
 
+        btnView =findViewById(R.id.btn_view);
         hourlyList =new ArrayList<>();
         dailyList =new ArrayList<>();
          linearLayoutHorizon =findViewById(R.id.itemHourLy);
@@ -98,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
      txtStatus =findViewById(R.id.txtStatus);
      txtTemp =findViewById(R.id.txtTemp);
      }
-
     private  void reqUrl(){
          RequestQueue req = Volley.newRequestQueue(this);
          JsonObjectRequest reqObj =new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -106,130 +126,11 @@ public class MainActivity extends AppCompatActivity {
              @Override
              public void onResponse(JSONObject response) {
                  try {
-                     //root
-                  JSONObject  object = response.getJSONObject("data");
-
-                   //reqNameCity
-                      arrayName = object.getJSONArray("request");
-                      objectName = arrayName.getJSONObject(0);
-                     arrNameCity =objectName.get("query").toString().split(",");
-                    //nodeWeather
-                      array = object.getJSONArray("weather");
-
-                     JSONObject objTemp = array.getJSONObject(0);
-
-                     //Get Date
-                       String day =objTemp.getString("date");
-                      txtDay.setText(setFormatterDayOfWeek(day));
-
-                     mainWeather.setUv_Index(objTemp.get("uvIndex").toString());
-                      mainWeather.setMax_temp(objTemp.get("maxtempC").toString());
-                     mainWeather.setMin_temp(objTemp.get("mintempC").toString());
-                     mainWeather.setTemp(objTemp.get("mintempC").toString());
-                     arrayAstronomy =objTemp.getJSONArray("astronomy");
-                     objAstronomy = arrayAstronomy.getJSONObject(0);
-                     arrayHourly =objTemp.getJSONArray("hourly");
-                   JSONObject  objAtIndex0 =arrayHourly.getJSONObject(0);
-                   //get WeatherDesc
-                   arrWeatherDesc  =   objAtIndex0.getJSONArray("weatherDesc");
-                     mainWeather.setStatus(arrWeatherDesc.getJSONObject(0).get("value").toString());
-                     txtStatus.setText(mainWeather.getStatus());
-                     //At obj Index 0
-                     mainWeather.setSunrise(objAstronomy.get("sunrise").toString());
-                     mainWeather.setSunset(objAstronomy.get("sunset").toString());
-                     mainWeather.setChance_of_rain(objAtIndex0.get("chanceofrain").toString());
-                      mainWeather.setHumidity(objAtIndex0.get("humidity").toString());
-                     mainWeather.setWind(objAtIndex0.get("windspeedKmph").toString()+"km/h");
-                     mainWeather.setFeelsLike(objAtIndex0.get("FeelsLikeC").toString()+"˚");
-                     mainWeather.setPrecipitation(objAtIndex0.get("precipMM").toString()+" cm");
-                     mainWeather.setPressure(objAtIndex0.get("pressure").toString()+"hPa");
-                     mainWeather.setVisibility(objAtIndex0.get("visibility").toString()+"km");
-
-                      txtMaxTemp.setText(mainWeather.getMax_temp());
-                     txtMinTemp.setText(mainWeather.getMin_temp());
-                     txtTemp.setText(mainWeather.getTemp()+"˚");
-                     txtChance_of_rain.setText(mainWeather.getChance_of_rain());
-                     txtHumidity.setText(mainWeather.getHumidity());
-                     txtWind.setText(mainWeather.getWind());
-                     txtFeelsLike.setText(mainWeather.getFeelsLike());
-                     txtPrecipi.setText(mainWeather.getPrecipitation());
-                     txtPressure.setText(mainWeather.getPressure());
-                     txtVisibility.setText(mainWeather.getVisibility());
-                     txtUvIndex.setText(mainWeather.getUv_Index());
-                     txtSunrise.setText(mainWeather.getSunrise());
-                     txtSunset.setText(mainWeather.getSunset());
-                     txtChance_of_rain.setText(mainWeather.getChance_of_rain()+"%");
-                     mainWeather.setName(arrNameCity[0]);
-                      txtName.setText(mainWeather.getName());
-
-                      //Get Daily
-                       for(int j=1; j<array.length();j++){
-                             JSONObject obj =array.getJSONObject(j);
-                         //    Toast.makeText(MainActivity.this,obj.toString(),Toast.LENGTH_LONG).show();
-                               String date = obj.getString("date");
-                               String maxTemp =obj.getString("mintempC");
-                              int minTempInt = Integer.parseInt(maxTemp) -6;
-                               String minTemp = String.valueOf(minTempInt);
-                            String icon = obj.getJSONArray("hourly").getJSONObject(0).get("weatherCode").toString();
-                             daily daily =new daily(date,icon,maxTemp,minTemp);
-                                dailyList.add(daily);
-                       }
-                     for ( daily items :
-                          dailyList  ) {
-                         String uri,dateFormat;
-                         View view =layoutInflaterItemsDaily.inflate(R.layout.itemdaily,linearLayoutVertical,false);
-                         txtDayBefore =view.findViewById(R.id.txtDayBefore);
-                         imgIconWeather =view.findViewById(R.id.iconWeather);
-                         txtMaxTempBefore =view.findViewById(R.id.txtMaxTemp);
-                         txtMinTempBefore =view.findViewById(R.id.txtMinTemp);
-                         int code = Integer.parseInt(items.getIconDay());
-                         uri = setIcon_Code(code);
-                         int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                         Drawable res = getResources().getDrawable(imageResource);
-                         imgIconWeather.setImageDrawable(res);
-                         txtDayBefore.setText(items.getDay());
-                        dateFormat =  setFormatterDayOfWeek(items.getDay());
-                        txtDayBefore.setText(dateFormat);
-                         txtMinTempBefore.setText(items.getMinTempDay());
-                         txtMaxTempBefore.setText(items.getMaxTempDay());
-                         linearLayoutVertical.addView(view);
-
-                     }
-
-
-                      //Get Hourly
-                     for(int i=0;i<arrayHourly.length();i++){
-                             JSONObject obj = arrayHourly.getJSONObject(i);
-                             String time =obj.getString("time");
-                         int timeTemp = Integer.parseInt(time);
-                          time =  setFormatTime(timeTemp);
-                         String temp =obj.getString("tempC");
-                             String weatherCode = obj.getString("weatherCode");
-                                     hourly hourly =new hourly(time,weatherCode,temp);
-                                     hourlyList.add(hourly);
-
-                     }
-                     for ( hourly items: hourlyList
-                          ) {
-                         String uri;
-                         View view = layoutInflaterItemsHourLy.inflate(R.layout.item,linearLayoutHorizon,false);
-                         tempItem =view.findViewById(R.id.tempItem);
-                         timeItem =view.findViewById(R.id.timeItem);
-                         iconUrl =view.findViewById(R.id.iconItem);
-                         int code = Integer.parseInt(items.getIcon());
-                          uri= setIcon_Code(code);
-                          int imgRes =getResources().getIdentifier(uri,null,getPackageName());
-                          Drawable res = getResources().getDrawable(imgRes);
-                         iconUrl.setImageDrawable(res);
-                         tempItem.setText(items.getTemp());
-                         timeItem.setText(items.getTime());
-                         linearLayoutHorizon.addView(view);
-
-                     }
-
-                } catch (JSONException e) {
+                     JSONObject res =response.getJSONObject("data");
+                     GetJson(res);
+                 } catch (JSONException e) {
                      e.printStackTrace();
-                }
+                 }
 
              }
          }, new Response.ErrorListener() {
@@ -241,7 +142,108 @@ public class MainActivity extends AppCompatActivity {
          );
            req.add(reqObj);
      }
+  private  void GetJson(JSONObject mJsonObject){
+      try {
+          arrayName = mJsonObject.getJSONArray("request");
+          objectName = arrayName.getJSONObject(0);
+          arrNameCity =objectName.get("query").toString().split(",");
+          array = mJsonObject.getJSONArray("weather");
+          JSONObject objTemp = array.getJSONObject(0);
+          arrayAstronomy =objTemp.getJSONArray("astronomy");
+          objAstronomy = arrayAstronomy.getJSONObject(0);
+          arrayHourly =objTemp.getJSONArray("hourly");
+          JSONObject  objAtIndex0 =arrayHourly.getJSONObject(0);
+          arrWeatherDesc  = objAtIndex0.getJSONArray("weatherDesc");
+          //Set format Date
+          String day =objTemp.getString("date");
+          txtDay.setText(setFormatterDayOfWeek(day));
 
+        //init Class Weather
+          mainWeather = dataProvider.getWeather(objTemp.get("maxtempC").toString(),objTemp.get("mintempC").toString(),objTemp.get("mintempC").toString(),
+                  arrNameCity[0],arrWeatherDesc.getJSONObject(0).get("value").toString(),objAstronomy.get("sunrise").toString(),
+                  objAstronomy.get("sunset").toString(),objAtIndex0.get("chanceofrain").toString(),objAtIndex0.get("humidity").toString(),
+                  objAtIndex0.get("windspeedKmph").toString()+"km/h",objAtIndex0.get("FeelsLikeC").toString()+"˚",objAtIndex0.get("precipMM").toString()+" cm",
+                  objAtIndex0.get("pressure").toString()+"hPa",objAtIndex0.get("visibility").toString()+"km",objTemp.get("uvIndex").toString());
+         //Set Text
+          txtStatus.setText(mainWeather.getStatus());
+          txtMaxTemp.setText(mainWeather.getMax_temp());
+          txtMinTemp.setText(mainWeather.getMin_temp());
+          txtTemp.setText(mainWeather.getTemp()+"˚");
+          txtChance_of_rain.setText(mainWeather.getChance_of_rain());
+          txtHumidity.setText(mainWeather.getHumidity());
+          txtWind.setText(mainWeather.getWind());
+          txtFeelsLike.setText(mainWeather.getFeelsLike());
+          txtPrecipi.setText(mainWeather.getPrecipitation());
+          txtPressure.setText(mainWeather.getPressure());
+          txtVisibility.setText(mainWeather.getVisibility());
+          txtUvIndex.setText(mainWeather.getUv_Index());
+          txtSunrise.setText(mainWeather.getSunrise());
+          txtSunset.setText(mainWeather.getSunset());
+          txtChance_of_rain.setText(mainWeather.getChance_of_rain()+"%");
+          txtName.setText(mainWeather.getName());
+            //Get Daily
+          for(int j=1; j<array.length();j++) {
+              JSONObject obj = array.getJSONObject(j);
+              //    Toast.makeText(MainActivity.this,obj.toString(),Toast.LENGTH_LONG).show();
+              String date = obj.getString("date");
+              String maxTemp = obj.getString("mintempC");
+              int minTempInt = Integer.parseInt(maxTemp) - 6;
+              String minTemp = String.valueOf(minTempInt);
+              String icon = obj.getJSONArray("hourly").getJSONObject(0).get("weatherCode").toString();
+              daily daily = new daily(date, icon, maxTemp, minTemp);
+              dailyList.add(daily);
+          }
+              for ( daily items :
+                      dailyList  ) {
+                  String uri,dateFormat;
+                  View view =layoutInflaterItemsDaily.inflate(R.layout.itemdaily,linearLayoutVertical,false);
+                  txtDayBefore =view.findViewById(R.id.txtDayBefore);
+                  imgIconWeather =view.findViewById(R.id.iconWeather);
+                  txtMaxTempBefore =view.findViewById(R.id.txtMaxTemp);
+                  txtMinTempBefore =view.findViewById(R.id.txtMinTemp);
+                  int code = Integer.parseInt(items.getIconDay());
+                  uri = setIcon_Code(code);
+                  int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                  Drawable res = getResources().getDrawable(imageResource);
+                  imgIconWeather.setImageDrawable(res);
+                  txtDayBefore.setText(items.getDay());
+                  dateFormat =  setFormatterDayOfWeek(items.getDay());
+                  txtDayBefore.setText(dateFormat);
+                  txtMinTempBefore.setText(items.getMinTempDay());
+                  txtMaxTempBefore.setText(items.getMaxTempDay());
+                  linearLayoutVertical.addView(view);
+              }
+              for(int i=0;i<arrayHourly.length();i++){
+                  JSONObject obj = arrayHourly.getJSONObject(i);
+                  String time =obj.getString("time");
+                  int timeTemp = Integer.parseInt(time);
+                  time =  setFormatTime(timeTemp);
+                  String temp =obj.getString("tempC");
+                  String weatherCode = obj.getString("weatherCode");
+                  hourly hourly =new hourly(time,weatherCode,temp);
+                  hourlyList.add(hourly);
+              }
+          //Get Hourly
+          for ( hourly items: hourlyList
+          ) {
+              String uri;
+              View view = layoutInflaterItemsHourLy.inflate(R.layout.item,linearLayoutHorizon,false);
+              tempItem =view.findViewById(R.id.tempItem);
+              timeItem =view.findViewById(R.id.timeItem);
+              iconUrl =view.findViewById(R.id.iconItem);
+              int code = Integer.parseInt(items.getIcon());
+              uri= setIcon_Code(code);
+              int imgRes =getResources().getIdentifier(uri,null,getPackageName());
+              Drawable res = getResources().getDrawable(imgRes);
+              iconUrl.setImageDrawable(res);
+              tempItem.setText(items.getTemp());
+              timeItem.setText(items.getTime());
+              linearLayoutHorizon.addView(view);
+          }
+      } catch (JSONException e) {
+          e.printStackTrace();
+      }
+  }
      private  String setIcon_Code(int code){
          String uri;
          if( code == 359 ||code ==308 ||code ==302 || code ==305){
@@ -377,7 +379,6 @@ public class MainActivity extends AppCompatActivity {
      }
 
     private  String setFormatterDayOfWeek(String dmy){
-
          SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
          String dateInString = dmy;
          Date date = null;
@@ -386,10 +387,9 @@ public class MainActivity extends AppCompatActivity {
          } catch (ParseException e) {
              e.printStackTrace();
          }
-         SimpleDateFormat sdf2 = new SimpleDateFormat("EEEE");
-
-         String stringDate2 = sdf2.format(date);
-         return  stringDate2;
+         SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+         String stringDate = sdf.format(date);
+         return  stringDate;
 
      }
      private  void initLayOut(){
@@ -397,10 +397,7 @@ public class MainActivity extends AppCompatActivity {
          layoutInflaterItemsDaily = LayoutInflater.from(this);
 
      }
-     private  void getValueWeather(){
-            mainWeather = dataProvider.getWeather();
 
-     }
 
 
 }

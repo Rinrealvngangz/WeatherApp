@@ -1,4 +1,4 @@
-package  com.example.weatherapp.ui.login;
+package com.example.weatherapp.ui.login;
 
 import androidx.annotation.Nullable;
 

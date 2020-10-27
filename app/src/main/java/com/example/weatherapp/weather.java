@@ -36,8 +36,8 @@ public class weather {
 
     private static weather instance =null;
 
-    public  static weather GetInstance(){
-        if(instance==null) instance =new weather();
+    public  static weather GetInstance(String max_temp, String min_temp, String temp, String name, String status, String sunrise, String sunset, String chance_of_rain, String humidity, String wind, String feelsLike, String precipitation, String pressure, String visibility, String uv_Index){
+        if(instance==null) instance =new weather(max_temp, min_temp, temp, name, status, sunrise, sunset, chance_of_rain, humidity, wind, feelsLike, precipitation, pressure, visibility, uv_Index);
         return  instance;
     }
 
@@ -168,4 +168,40 @@ public class weather {
         this.name = name;
     }
 
+    public static class lvWeather {
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getTemp() {
+            return temp;
+        }
+
+        public void setTemp(String temp) {
+            this.temp = temp;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
+        public lvWeather(String name, String temp, String time) {
+            this.name = name;
+            this.temp = temp;
+            this.time = time;
+        }
+
+        public  String name;
+         public  String temp;
+         public  String time;
+    }
 }

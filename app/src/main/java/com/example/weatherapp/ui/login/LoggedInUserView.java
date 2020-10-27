@@ -1,4 +1,4 @@
-package  com.example.weatherapp.ui.login;
+package com.example.weatherapp.ui.login;
 
 /**
  * Class exposing authenticated user details to the UI.
