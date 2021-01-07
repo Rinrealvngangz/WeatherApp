@@ -42,7 +42,7 @@ public class weather {
     }
 
     private void setInstance(weather Instance){ instance =Instance;}
-    private   weather(){}
+    public weather(){}
 
 
     public weather(String max_temp, String min_temp, String temp, String name, String status, String sunrise, String sunset, String chance_of_rain, String humidity, String wind, String feelsLike, String precipitation, String pressure, String visibility, String uv_Index) {

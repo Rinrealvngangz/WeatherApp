@@ -17,7 +17,8 @@ public class DataProvider {
     };
 
     public  weather getWeather(String max_temp, String min_temp, String temp, String name, String status, String sunrise, String sunset, String chance_of_rain, String humidity, String wind, String feelsLike, String precipitation, String pressure, String visibility, String uv_Index){
-        _weather =weather.GetInstance(max_temp, min_temp, temp, name, status, sunrise, sunset, chance_of_rain, humidity, wind, feelsLike, precipitation, pressure, visibility, uv_Index);
+        _weather =new weather(max_temp, min_temp, temp, name, status, sunrise, sunset, chance_of_rain, humidity, wind, feelsLike, precipitation, pressure, visibility, uv_Index);
+       // _weather =weather.GetInstance(max_temp, min_temp, temp, name, status, sunrise, sunset, chance_of_rain, humidity, wind, feelsLike, precipitation, pressure, visibility, uv_Index);
         return _weather;
     }
 

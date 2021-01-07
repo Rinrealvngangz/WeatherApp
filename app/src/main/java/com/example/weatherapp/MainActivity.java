@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private List<hourly> hourlyList;
     private  List<daily> dailyList;
 private  JSONObject mJsonObject;
-     public String  url ="https://api.worldweatheronline.com/premium/v1/weather.ashx?key=5b9fefe967924430a45130625202010&q=DaLat&tp=1&num_of_days=10&format=json";
+     public String  url ="https://api.worldweatheronline.com/premium/v1/weather.ashx?key=05c93b381e664757ae143628210601&q=DaLat_of_days=10&format=json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,7 +159,7 @@ private  JSONObject mJsonObject;
           txtDay.setText(setFormatterDayOfWeek(day));
 
         //init Class Weather
-          mainWeather = dataProvider.getWeather(objTemp.get("maxtempC").toString(),objTemp.get("mintempC").toString(),objTemp.get("mintempC").toString(),
+          mainWeather = dataProvider.getWeather(objTemp.get("maxtempC").toString(),objTemp.get("mintempC").toString(),objTemp.get("maxtempC").toString(),
                   arrNameCity[0],arrWeatherDesc.getJSONObject(0).get("value").toString(),objAstronomy.get("sunrise").toString(),
                   objAstronomy.get("sunset").toString(),objAtIndex0.get("chanceofrain").toString(),objAtIndex0.get("humidity").toString(),
                   objAtIndex0.get("windspeedKmph").toString()+"km/h",objAtIndex0.get("FeelsLikeC").toString()+"˚",objAtIndex0.get("precipMM").toString()+" cm",

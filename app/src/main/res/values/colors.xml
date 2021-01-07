@@ -5,4 +5,6 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="colorWhite">#fff</color>
     <color name="colorBlack">#000</color>
+    <color name="colorMain">#2A2A2E</color>
+    <color name="colorHourly">#2A2A2E</color>
 </resources>

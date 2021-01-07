@@ -40,6 +40,7 @@ public class listViewWeather extends AppCompatActivity {
   ImageButton btnFind;
   EditText editText;
   String query="";
+    private static final String Api  = "05c93b381e664757ae143628210601";
   private  JSONArray arrayName,array;
   private JSONObject objectName;
     private  String arrNameCity[];
@@ -75,7 +76,7 @@ public class listViewWeather extends AppCompatActivity {
        });
     }
     private  void reqUrl(String query){
-        String  url ="https://api.worldweatheronline.com/premium/v1/weather.ashx?key=5b9fefe967924430a45130625202010&q="+query+"&tp=1&num_of_days=10&format=json";
+        String  url ="https://api.worldweatheronline.com/premium/v1/weather.ashx?key="+Api+"&q="+query+"&tp=1&num_of_days=10&format=json";
         RequestQueue req = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest =new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -98,6 +99,7 @@ public class listViewWeather extends AppCompatActivity {
                    //Toast.makeText(listViewWeather.this,arrNameCity[0],Toast.LENGTH_LONG).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Toast.makeText(com.example.weatherapp.listViewWeather.this,"No found,please enter again!",Toast.LENGTH_LONG).show();
                 }
 
 

@@ -14,7 +14,7 @@
             android:text="Wednesday"
             android:textSize="15sp"
 
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorMain"
             >
         </TextView>
         <Space
@@ -42,7 +42,7 @@
             android:text="29"
             android:textSize="15sp"
 
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorMain"
 
             >
         </TextView>
@@ -59,7 +59,7 @@
            android:text="24"
            android:textSize="15sp"
 
-           android:textColor="@color/colorPrimary"
+           android:textColor="@color/colorMain"
            >
        </TextView>
 
